@@ -1,5 +1,6 @@
 const express = require('express'); //requires express module
 const socket = require('socket.io'); //requires socket.io module
+const db = require('./database'); // for MySQL db commands
 const fs = require('fs');
 const app = express();
 var PORT = process.env.PORT || 3000;
@@ -43,5 +44,19 @@ io.on('connection', (socket) => {
         console.log("hello_post event received with data:", data)
         // Assuming you want to send a response back to the client
         socket.emit('hello_post', 'Post request received!');
+    })
+
+    // Handle 'sql_query' event
+    socket.on('sql_query', async () => {
+        try {
+            const [rows, fields] = await db.promise().query("SELECT * FROM users");
+            console.log(rows);
+            // Emit the fetched data back to the client
+            socket.emit('sql_result', rows);
+        } catch (err) {
+            console.error(err.message, "sql_query");
+            // Emit an error back to the client
+            socket.emit('sql_result', { error: 'Internal Server Error' });
+        }
     })
 })
