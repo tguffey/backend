@@ -22,6 +22,26 @@ io.on('connection', (socket) => {
     socket.on('counter', () => {
         count++;
         console.log(count)
-        io.emit('counter', count);
+        socket.emit('counter', count);
+    })
+
+
+    socket.on('hellotest', () => {
+        console.log("test received")
+        socket.emit('hellotest', 'Hello World!');
+    })
+
+    // Hello GET function
+    socket.on('hello', () => {
+        console.log("hello event received")
+        // Assuming you want to send a response back to the client
+        socket.emit('hello', 'Hello from the server!');
+    })
+
+    // HelloPost POST function
+    socket.on('hello_post', (data) => {
+        console.log("hello_post event received with data:", data)
+        // Assuming you want to send a response back to the client
+        socket.emit('hello_post', 'Post request received!');
     })
 })
