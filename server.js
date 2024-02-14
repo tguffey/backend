@@ -105,9 +105,24 @@ io.on('connection', (socket) => {
 
     // HelloPost POST function
     socket.on('hello_post', (data) => {
-        console.log("hello_post event received with data:", data)
-        // Assuming you want to send a response back to the client
-        socket.emit('hello_post', 'Post request received!');
+      console.log("hello_post event received with data:", data)
+      // Assuming you want to send a response back to the client
+      socket.emit('hello_post', 'Post request received!');
+    })
+
+    socket.on('save_signup_info', async (username, email, password) => {
+      try {      
+        // TODO: Sanitize all fields (no sql injection)
+        // TODO: store password as hash for data security
+        // TODO: when fail, emit fail event, when sucess, emit sucess event for the front end to handle differntly.
+        // NOTE: MySql wants different " or ' for the SQL commands
+        connection.query('INSERT INTO testgrocer.users (username,email,password) values ' + `("${username}","${email}","${password}")`);
+        //emit success msg heere
+        } catch (err) {
+            console.error(err.message, "save_signup_info");
+            // Emit an error back to the client
+            socket.emit('save_signup_result', { error: 'Internal Server Error' });
+        }
     })
 
     // Handle 'sql_query' event
