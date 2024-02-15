@@ -5,68 +5,7 @@ const fs = require('fs');
 const app = express();
 var PORT = process.env.PORT || 3000;
 const server = app.listen(PORT); //tells to host server on localhost:3000
-const mysql = require('mysql2');
-
-
-
-
-//___________testing database connection___________________________________________________
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '24$+vY!#Fjk-3',
-    database: 'testgrocer'
-  });
-
-// Connect to the database
-connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL database:', err);
-      return;
-    }
-    console.log('Connected to MySQL database');
-  });
-
-
-//testing database operations
-const inputData = {
-    username: 'example_user0',
-    email: 'user098@example.com',
-    password: 'rand0mP4ss'
-};
-
-// // insert object into database
-// connection.query('INSERT INTO testgrocer.users SET ?', inputData, (err, results) => {
-//     if (err) {
-//       console.error('Error inserting data into MySQL database:', err);
-//       return;
-//     }
-//     console.log('Data inserted successfully:', results);
-//   });
-
-//retrieve information and format
-connection.query('SELECT * FROM users', (err, results) => {
-    if (err) {
-      console.error('Error querying MySQL database:', err);
-      return;
-    }
-
-    // Display user information in the terminal
-    console.log('User Information:');
-    results.forEach((user) => {
-      console.log(`Username: ${user.username}, Email: ${user.email}`);
-    })
-});
-
-// Handle errors
-connection.on('error', (err) => {
-    console.error('MySQL database error:', err);
-  });
-  
-// Close the database connection when the Node.js process exits
-process.on('exit', () => {
-    connection.end();
-  });
+var testConnect = require('./TestConnection');
 
 // //____________________________________________________
 
@@ -75,8 +14,11 @@ process.on('exit', () => {
 app.use(express.static('public')); //show static files in 'public' directory
 console.log('Server is running');
 const io = socket(server);
-
 var count = 0;
+
+// Test database connection
+testConnect.testConnect();
+testConnect.testRetrieve();
 
 
 //Socket.io Connection------------------
@@ -84,27 +26,26 @@ io.on('connection', (socket) => {
 
     console.log("New socket connection: " + socket.id)
 
-    socket.on('counter', () => {
+    socket.on('counter', async () => {
         count++;
         console.log(count)
         socket.emit('counter', count);
     })
 
-
-    socket.on('hellotest', () => {
+    socket.on('hellotest', async () => {
         console.log("test received")
         socket.emit('hellotest', 'Hello World!');
     })
 
     // Hello GET function
-    socket.on('hello', () => {
+    socket.on('hello', async () => {
         console.log("hello event received")
         // Assuming you want to send a response back to the client
         socket.emit('hello', 'Hello from the server!');
     })
 
     // HelloPost POST function
-    socket.on('hello_post', (data) => {
+    socket.on('hello_post', async (data) => {
       console.log("hello_post event received with data:", data)
       // Assuming you want to send a response back to the client
       socket.emit('hello_post', 'Post request received!');
