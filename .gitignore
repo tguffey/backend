@@ -4,3 +4,4 @@
 # Ignore configuration files with sensitive information
 database.js
 node_modules/*
+testgrocersql.sql
