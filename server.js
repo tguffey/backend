@@ -23,7 +23,7 @@ testConnect.testRetrieve();
 
 //Socket.io Connection------------------
 io.on('connection', (socket) => {
-
+    // receiving events
     console.log("New socket connection: " + socket.id)
 
     socket.on('counter', async () => {
