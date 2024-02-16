@@ -16,7 +16,7 @@ console.log('Server is running');
 const io = socket(server);
 var count = 0;
 
-// Test database connection
+// Test database connection using 
 testConnect.testConnect();
 testConnect.testRetrieve();
 

@@ -1,11 +1,8 @@
 const mysql = require('mysql2');
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '24$+vY!#Fjk-3',
-    database: 'testgrocer'
-})
+
+const dbConfig = require('./database')
+const connection = mysql.createConnection(dbConfig)
 
 // Handle errors
 connection.on('error', (err) => {
@@ -53,6 +50,7 @@ module.exports = {
     },  
 };
     
+
  //testing database operations
 
 // TEST INSERT
