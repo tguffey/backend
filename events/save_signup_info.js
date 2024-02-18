@@ -4,7 +4,7 @@
 
 // DONE: sanitize query to prevent sql injection
 // DONE: handling error on back end, duplicate insert error
-// TODO: handling emit back messge after fail or success on front end
+// DONE: handling emit back messge after fail or success on front end
 // TODO LATER: store password as hash for data security
 
 module.exports = (socket,connection) => {
