@@ -28,11 +28,15 @@ io.on('connection', (socket) => {
     // receiving events and emit back.
     console.log("New socket connection: " + socket.id)
 
+    // functions for testing
     require('./events/counter')(socket, count); // counter button
     require('./events/hellotest')(socket); //
-    require('./events/gettest')(socket); // Get test button
     require('./events/hello_post')(socket); // post test button in the app
     require('./events/sql_query')(socket,connection); // Handle 'sql_query' event
+
+
+    // actually important functions
+    require('./events/gettest')(socket); // Get test button, let server know the server is connected.
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
     
     
