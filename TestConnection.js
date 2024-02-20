@@ -24,6 +24,7 @@ module.exports = {
 
         // Close the database connection when the Node.js process exits
         process.on('exit', () => {
+            console.log("ending database connection");
             connection.end();
         })
     },

@@ -20,7 +20,7 @@ var count = 0;
 
 // Test database connection using 
 testConnect.testConnect();
-testConnect.testRetrieve();
+// testConnect.testRetrieve();
 
 
 //Socket.io Connection------------------
@@ -35,6 +35,9 @@ io.on('connection', (socket) => {
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
     require('./events/sql_query')(socket,connection); // Handle 'sql_query' event
     
+    socket.on("disconnect", () =>{
+        console.log('User ' +socket.id + ' disconnected.');
+    })
 })
 
 
