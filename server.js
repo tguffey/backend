@@ -32,8 +32,9 @@ io.on('connection', (socket) => {
     require('./events/hellotest')(socket); //
     require('./events/gettest')(socket); // Get test button
     require('./events/hello_post')(socket); // post test button in the app
-    require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
     require('./events/sql_query')(socket,connection); // Handle 'sql_query' event
+    require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
+    
     
     socket.on("disconnect", () =>{
         console.log('User ' +socket.id + ' disconnected.');
