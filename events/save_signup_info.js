@@ -23,7 +23,7 @@ module.exports = (socket,connection) => {
                     // Other types of errors
                     console.error(error);
                     // Handle other errors as needed
-                    socket.emit('registrationError', 'Internal Server Error');
+                    socket.emit('registrationError', 'Internal Server Error, try again later');
                   }
             }else{
                 // Query was successful
