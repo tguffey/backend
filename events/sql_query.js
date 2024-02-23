@@ -7,7 +7,9 @@ module.exports = (socket,connection) => {
             console.log("here are the users: ", rows);
             // Emit the fetched data back to the client
             // socket.emit('hello_post', 'Post these are the users');
-            socket.emit('sql_result', rows);
+            const jsonRows = rows.map(row => ({ username: row.username, email: row.email }));
+
+            socket.emit('sql_result', jsonRows);
         } catch (err) {
             console.error(err.message, "sql_query");
             // Emit an error back to the client
