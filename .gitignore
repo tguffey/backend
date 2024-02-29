@@ -3,6 +3,6 @@
 
 # Ignore configuration files with sensitive information
 database.js
-node_modules/*
+# node_modules/*
 testgrocersql.sql
 .vscode
