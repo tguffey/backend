@@ -5,4 +5,4 @@
 database.js
 # node_modules/*
 testgrocersql.sql
-.vscode
+# .vscode
