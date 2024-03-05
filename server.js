@@ -15,6 +15,7 @@ const connection = mysql.createConnection(db)
 //Playing variables:
 app.use(express.static('public')); //show static files in 'public' directory
 console.log('Server is running');
+
 const io = socket(server);
 var count = 0;
 
@@ -38,6 +39,7 @@ io.on('connection', (socket) => {
     // actually important functions
     require('./events/gettest')(socket); // Get test button, let server know the server is connected.
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
+    require('./events/scrapeIngredientsEvent')(socket); // Ingredient scraper event handler
     
     
     socket.on("disconnect", () =>{
