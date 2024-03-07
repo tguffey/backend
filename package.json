@@ -6,6 +6,7 @@
     "fs": "^0.0.1-security",
     "gson": "^0.1.5",
     "mysql2": "^3.9.1",
+    "node-fetch": "^3.3.2",
     "socket.io": "^4.7.4"
   }
 }
