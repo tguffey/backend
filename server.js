@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
     require('./events/gettest')(socket); // Get test button, let server know the server is connected.
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
     require('./events/scrapeIngredientsEvent')(socket); // Ingredient scraper event handler
-    
+    require('./events/getNutritionDataEvent')(socket); // USDA Nutritional Data Grabber
     
     socket.on("disconnect", () =>{
         console.log('User ' +socket.id + ' disconnected.');

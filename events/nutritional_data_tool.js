@@ -86,8 +86,12 @@ async function getNutritionalContent(foodName, quantity, unit) {
     }
 }
 
+module.exports = {
+    getNutritionalContent
+};
+
 // Example usage
-getNutritionalContent('chicken', 1, 'pound');
+//getNutritionalContent('chicken', 1, 'pound');
 //getNutritionalContent('cheddar cheese', 2, 'oz');
 //getNutritionalContent('apple yogurt', 2, 'oz');
 //getNutritionalData('butter');
