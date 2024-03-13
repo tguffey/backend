@@ -46,11 +46,17 @@ function categorizeMyPlate(foodDescription) {
 
 // Function to get nutritional data for a given food by name, quantity, and unit, and prints desired nutritional values
 async function getNutritionalContent(foodName, quantity, unit) {
+    const nutrientNames = {
+        Protein: 'Protein',
+        Carbs: 'Carbohydrate, by difference',
+        Fat: 'Total lipid (fat)'
+    };
+
     const quantityInGrams = convertToGrams(quantity, unit);
     if (quantityInGrams === 0) {
-        console.error(`Unsupported unit: ${unit}.`);
-        return;
+        return { error: `Unsupported unit: ${unit}.` };
     }
+
     const url = `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(foodName)}&api_key=${apiKey}`;
 
     try {
@@ -59,32 +65,35 @@ async function getNutritionalContent(foodName, quantity, unit) {
 
         if (data.foods && data.foods.length > 0) {
             const foodData = data.foods[0];
-            console.log(`Food: ${foodData.description}`);
-            // Determine and display the MyPlate category
             const myPlateCategory = categorizeMyPlate(foodData.description);
-            console.log(`MyPlate Category: ${myPlateCategory.charAt(0).toUpperCase() + myPlateCategory.slice(1)}`);
 
-            const nutrientNames = {
-                Protein: 'Protein',
-                Carbs: 'Carbohydrate, by difference',
-                Fat: 'Total lipid (fat)'
+            const nutritionalInfo = {
+                description: foodData.description,
+                myPlateCategory: myPlateCategory.charAt(0).toUpperCase() + myPlateCategory.slice(1),
+                nutrients: {}
             };
+
+            // Iterate through nutrientNames to find and calculate the corresponding nutrients from the API response
             Object.entries(nutrientNames).forEach(([key, nutrientName]) => {
                 const nutrient = foodData.foodNutrients.find(n => n.nutrientName === nutrientName);
                 if (nutrient) {
                     const totalNutrient = (nutrient.value * quantityInGrams) / 100;
-                    console.log(`${key}: ${totalNutrient.toFixed(2)} ${nutrient.unitName}`);
+                    nutritionalInfo.nutrients[key] = `${totalNutrient.toFixed(2)} ${nutrient.unitName}`;
                 } else {
-                    console.log(`${key} content not found for ${foodName}.`);
+                    nutritionalInfo.nutrients[key] = `Not available`;
                 }
             });
+
+            return nutritionalInfo;
         } else {
-            console.log(`No data found for ${foodName}.`);
+            return { error: `No data found for ${foodName}.` };
         }
     } catch (error) {
         console.error(`Error fetching nutritional data for ${foodName}:`, error);
+        return { error: `Error fetching nutritional data for ${foodName}: ${error.message}` };
     }
 }
+
 
 module.exports = {
     getNutritionalContent
