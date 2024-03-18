@@ -29,23 +29,44 @@ function parseIngredient(ingredient) {
     ingredient = convertFractions(ingredient);
     ingredient = ingredient.replace(/\(\$[^\)]+\)/, '').trim();
 
-    const regex = /^(?:▢\s*)?([0-9\/\-\s]+)?\s*(cup|tsp|teaspoon|tablespoon|tbsp|pound|lb|ounce|oz|g|gram|kilogram|kg|ml|liter|l)?(?:\s*\(([^)]+)\))?\s*([^,]+),?/i;
-    const match = ingredient.match(regex);
+    // Enhanced regex to more accurately differentiate between units and the beginning of ingredient names
+    const regex = /^(?:▢\s*)?([0-9\/\-\s]+)?\s*(cup|tsp|teaspoon|tablespoon|tbsp|pound|lb|ounce|oz|g|gram|kilogram|kg|ml|liter|l)?(?:\s+\(([^)]+)\))?\s*(.*)/i;
+    let match = ingredient.match(regex);
 
     if (match) {
         let [, amount, unit, additionalDetails, name] = match;
-        unit = unit ? unit.trim() : '';
-        if (additionalDetails) {
-            unit += ` (${additionalDetails.trim()})`;
+        name = name ? name.trim() : '';
+
+        // Remove any leading dot and spaces from the name
+        name = name.replace(/^\.\s*/, '');
+
+        // This logic is specifically to address the issue with "2 large eggs" where "l"
+        // is cut off and assumed the name for "unit", since l is also "liters"
+        // Implement a logic to check if 'unit' is actually part of 'name'
+        if (unit === 'l' && /^[aeiou]/i.test(name)) {
+            // This assumes 'l' followed by a vowel at the start of 'name' is likely not a unit
+            name = `l${name}`; // Prepend 'l' back to the start of 'name'
+            unit = ''; // Clear the 'unit' as it's been determined to be part of the name
+        } else {
+            unit = unit ? unit.trim() : '';
         }
+
+        if (additionalDetails) {
+            name = `${additionalDetails} ${name}`; // Prepend additional details to name if present
+        }
+
         return {
             Amount: amount ? amount.trim() : '',
             Unit: unit,
-            Name: name ? name.trim() : ''
+            Name: name
         };
     }
     return { Amount: '', Unit: '', Name: ingredient };
 }
+
+
+
+
 
 // This function scrapes ingredients from a given URL
 async function scrapeIngredients(url) {
