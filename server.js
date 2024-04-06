@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
     require('./events/scrapeIngredientsEvent')(socket); // Ingredient scraper event handler
     require('./events/getNutritionDataEvent')(socket); // USDA Nutritional Data Grabber
+    require('./events/scrapeRecipeStepsEvent')(socket); // Recipe steps scraper event handler
     
     socket.on("disconnect", () =>{
         console.log('User ' +socket.id + ' disconnected.');
