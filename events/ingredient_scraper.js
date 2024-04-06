@@ -64,32 +64,35 @@ function parseIngredient(ingredient) {
     return { Amount: '', Unit: '', Name: ingredient };
 }
 
-
-
-
-
-// This function scrapes ingredients from a given URL
-async function scrapeIngredients(url) {
+async function scrapeIngredientsAndInstructions(url) {
     try {
         const response = await axios.get(url);
         const html = response.data;
         const $ = cheerio.load(html);
         let ingredients = [];
+        let instructions = [];
 
-        // This selector should be adjusted based on the specific structure of the website you are scraping
+        // Scrape Ingredients
         $('.wprm-recipe-ingredient').each((index, element) => {
             const fullText = $(element).text().trim();
             const parsedIngredient = parseIngredient(fullText);
             ingredients.push(parsedIngredient);
         });
 
-        return ingredients;
+        // Scrape Instructions
+        // Adjust the selector based on the website's structure for instructions
+        $('.wprm-recipe-instruction-text').each((index, element) => {
+            const stepText = $(element).text().trim();
+            instructions.push(stepText); // Collecting instructions as an array of strings
+        });
+
+        return { ingredients, instructions }; // Return both ingredients and instructions
     } catch (error) {
-        console.error(`Error scraping ingredients: ${error}`);
+        console.error(`Error scraping recipe data: ${error}`);
         throw error; // Rethrow the error to be caught by the caller
     }
 }
 
 module.exports = {
-    scrapeIngredients
+    scrapeIngredientsAndInstructions // Updated to reflect the new function name and functionality
 };
