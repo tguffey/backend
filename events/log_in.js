@@ -1,5 +1,18 @@
 // log_in event
+const express = require('express'); //requires express module
+const socket = require('socket.io'); //requires socket.io module
+const fs = require('fs');
+const app = express();
+var PORT = process.env.PORT || 3000;
+const server = app.listen(PORT); //tells to host server on localhost:3000
+var testConnect = require('./TestConnection');
 
+const mysql = require('mysql2');
+const db = require('./database'); // for MySQL db commands
+const connection = mysql.createConnection(db)
+
+
+// //____________________________________________________
 
 module.exports = (socket,connection) => {
 
@@ -33,7 +46,7 @@ module.exports = (socket,connection) => {
                     return;
                 }
                 
-                // TODO: not sure if this works, test it out please.
+                // this works, assign the query result to user. from that we can retrieve other fields of user.
                 console.log("now assigning the results to user.")
                 const user = results[0]
     
