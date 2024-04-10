@@ -24,12 +24,12 @@ module.exports = (socket,connection) => {
                 }
     
     
-                // If no user is found with such email, emit "fail_noUserExist"
+                // If no user is found with such username, emit "fail_noUserExist"
                 // absolute operand to make sure no automatic type conversions take place
                 // terminate process
                 if (results.length === 0){
-                    console.log("cannot find the user with this email.");
-                    socket.emit('fail_noUserExist', 'There is no user with that email, please try again.')
+                    console.log("cannot find the user with this username.");
+                    socket.emit('fail_noUserExist', 'There is no user with that username, please try again.')
                     return;
                 }
                 
