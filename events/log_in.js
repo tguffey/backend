@@ -1,15 +1,15 @@
-// log_in event
-const express = require('express'); //requires express module
-const socket = require('socket.io'); //requires socket.io module
-const fs = require('fs');
-const app = express();
-var PORT = process.env.PORT || 3000;
-const server = app.listen(PORT); //tells to host server on localhost:3000
-var testConnect = require('./TestConnection');
+// // log_in event
+// const express = require('express'); //requires express module
+// const socket = require('socket.io'); //requires socket.io module
+// const fs = require('fs');
+// const app = express();
+// var PORT = process.env.PORT || 3000;
+// const server = app.listen(PORT); //tells to host server on localhost:3000
+// var testConnect = require('./TestConnection');
 
-const mysql = require('mysql2');
-const db = require('./database'); // for MySQL db commands
-const connection = mysql.createConnection(db)
+// const mysql = require('mysql2');
+// const db = require('./database'); // for MySQL db commands
+// const connection = mysql.createConnection(db)
 
 
 // //____________________________________________________
