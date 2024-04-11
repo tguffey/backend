@@ -14,3 +14,17 @@ module.exports = (socket) => {
         }
     });
 };
+
+module.exports = (socket) => {
+    socket.on('get-ingredients-for-shopping-list', async (url) => {
+        try {
+            console.log(`(SL) Scraping recipe data from: ${url}`);
+            const { ingredients, instructions } = await scrapeIngredientsAndInstructions(url);
+            socket.emit('ingredients-result-for-shopping-list', { ingredients});
+            console.log(`(SL) Finished scraping from: ${url}`);
+        } catch (error) {
+            console.error(`(SL) Error scraping recipe data: ${error}`);
+            socket.emit('ingredients-result', error.message);
+        }
+    });
+};
