@@ -24,13 +24,16 @@ module.exports = (socket,connection) => {
         try{
             const query = 'SELECT * FROM users WHERE email = ?';
             connection.query(query, [email], (err, results) => {
+                // this emit works!
+                socket.emit('testing_emits', 'emitting from register_email_check')
 
-                if (err){
-                    console.error('Error querying database: ' + err.stack);
-                    socket.emit('email_check_error', 'Internal server error, try again later');
-                    socket.emit('hitest', "hi");
-                    return;
-                }
+
+                // if (err){
+                //     console.error('Error querying database: ' + err.stack);
+                //     socket.emit('email_check_error', 'Internal server error, try again later');
+                //     socket.emit('hitest', "hi");
+                //     return;
+                // }
                 
                 // if a user is found with that mail aready, emit 
                 if (results.length !== 0){
@@ -41,8 +44,9 @@ module.exports = (socket,connection) => {
                 } // making sure the result is blank
                 else if (results.length === 0){
                     console.log("email" + email + " is unique. user can proceed to next step.");
-                    socket.emit('email_check_sucess', 'email is unique and valid');
-                    socket.emit('hitest', "hi");
+                    socket.emit('email_check_success', 'email is unique and valid');
+                    // the front end was able to recieve this next emit
+                    // socket.emit('hitest', "hi");
                     return;
                 }
                 console.log("if statements has concluded, if it doesnt print one of two results, something is wrong.");
