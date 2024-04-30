@@ -35,7 +35,6 @@ io.on('connection', (socket) => {
     require('./events/hello_post')(socket); // post test button in the app
     require('./events/sql_query')(socket,connection); // Handle 'sql_query' event
 
-
     // actually important functions
     require('./events/gettest')(socket); // Get test button, let server know the server is connected.
     require('./events/save_signup_info')(socket,connection); // SIGN UP button in the app
@@ -43,6 +42,11 @@ io.on('connection', (socket) => {
     require('./events/getNutritionDataEvent')(socket); // USDA Nutritional Data Grabber
     require('./events/ingredientsToNutritionalData')(socket);
     
+    require('./events/log_in')(socket,connection); // handle log in event and errors 
+    require('./events/register_email_check')(socket,connection); // handle duplicate email checking
+    require('./events/register_username_check')(socket,connection); // handle duplicate username checking
+
+
 
     socket.on("disconnect", () =>{
         console.log('User ' +socket.id + ' disconnected.');
