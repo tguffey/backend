@@ -42,6 +42,9 @@ io.on('connection', (socket) => {
     require('./events/getNutritionDataEvent')(socket); // USDA Nutritional Data Grabber
     require('./events/log_in')(socket,connection); // handle log in event and errors 
     require('./events/register_email_check')(socket,connection); // handle duplicate email checking
+    require('./events/register_username_check')(socket,connection); // handle duplicate username checking
+
+
 
     socket.on("disconnect", () =>{
         console.log('User ' +socket.id + ' disconnected.');

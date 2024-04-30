@@ -11,6 +11,7 @@
 // const db = require('./database'); // for MySQL db commands
 // const connection = mysql.createConnection(db)
 
+const bcrypt = require('bcrypt')
 
 // //____________________________________________________
 
@@ -27,7 +28,7 @@ module.exports = (socket,connection) => {
         // Query the database to check if user with the provided email exists
         try{
             const query = 'SELECT * FROM users WHERE username = ?';
-            connection.query(query, [username], (err, results) => {
+            connection.query(query, [username], async (err, results) => {
                 
                 // unknown error, maybe database, terminate process
                 if (err){
@@ -35,7 +36,6 @@ module.exports = (socket,connection) => {
                     socket.emit('loginError', 'Internal Server error. try again later.')
                     return;
                 }
-    
     
                 // If no user is found with such username, emit "fail_noUserExist"
                 // absolute operand to make sure no automatic type conversions take place
@@ -47,29 +47,31 @@ module.exports = (socket,connection) => {
                 }
                 
                 // this works, assign the query result to user. from that we can retrieve other fields of user.
-                console.log("now assigning the results to user.")
-                const user = results[0]
-    
-                // check if password matches. if not emit fail_wrongPassword
-                // absolute operand to make sure no automatic type conversions take place
-                // terminate process
-                if (user.password !== password){
-                    console.log("was able to find the uuser but password is incorrect.");
-                    socket.emit('fail_wrongPassword', 'Incorrect password.')
-                    return;
+                console.log("now assigning the results to user.");
+                const user = results[0];
+                
+                try{
+                    const passwordMatch = await bcrypt.compare(password, user.password); // returns a bool im assuming
+                    
+                    // if passowrds match,log and emit success event
+                    if (passwordMatch) {
+                        console.log("was able to find and authenticate the user. now emitting back");
+                        console.log("User authenticated successfully.");
+                        socket.emit('success_login', "Login Successful. Welcome back!");
+                    } else {
+                        console.log("was able to find the uuser but password is incorrect.");
+                        socket.emit('fail_wrongPassword', 'Incorrect password.');
+                    }
+
+                }catch(error){
+                    console.error('Error comparing passwords:', error);
+                    socket.emit('loginError', 'Internal Server error. Try again later.');
                 }
-                
-                // if the function has not returned so far, that means password matched.
-                // if password matches, emit success_login
-                console.log("was able to find and authenticate the user. now emitting back");
-                socket.emit('success_login', "Login Sucessful, welcome back!")
-                
-    
             });
         
         } catch(error){
             console.error('Error querying database:', error);
-            socket.emit('login_response', { status: 'error', message: 'Database error' });
+            socket.emit('loginError', 'Internal Server error. Try again later.');
         }
         
 
