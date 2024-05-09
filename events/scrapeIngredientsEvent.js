@@ -15,6 +15,7 @@ module.exports = (socket) => {
     });
 };
 
+/*
 module.exports = (socket) => {
     socket.on('get-ingredients-for-shopping-list', async (url) => {
         try {
@@ -27,4 +28,4 @@ module.exports = (socket) => {
             socket.emit('ingredients-result', error.message);
         }
     });
-};
+};*/

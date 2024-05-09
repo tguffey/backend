@@ -41,6 +41,7 @@ io.on('connection', (socket) => {
     require('./events/scrapeIngredientsEvent')(socket); // Ingredient scraper event handler
     require('./events/getNutritionDataEvent')(socket); // USDA Nutritional Data Grabber
     require('./events/ingredientsToNutritionalData')(socket);
+    require('./events/barcode_lookup')(socket); // Barcode lookup event handler 
     
     require('./events/log_in')(socket,connection); // handle log in event and errors 
     require('./events/register_email_check')(socket,connection); // handle duplicate email checking
