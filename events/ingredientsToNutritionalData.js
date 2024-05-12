@@ -6,35 +6,52 @@ module.exports = (socket) => {
         try {
             console.log(`Starting recipe -> Nutritional Data function:`);
             console.log(`Scraping recipe ingredients from: ${url}`);
-            const { ingredients, instructions } = await scrapeIngredientsAndInstructions(url);
+            const { ingredients } = await scrapeIngredientsAndInstructions(url);
             console.log(`Finished scraping ingredients from: ${url}`);
-            console.log('Ingredients list:');
-            const nutritionalDataResults = [];
 
-            for (const ingredient of ingredients) {
-                console.log(`Amount: ${ingredient.Amount}, Unit: ${ingredient.Unit}, Name: ${ingredient.Name}`);
-                // Fetch nutritional data for each ingredient
-                const nutritionalInfo = await getNutritionalContent(ingredient.Name, ingredient.Amount, ingredient.Unit);
-                if (!nutritionalInfo.error) {
-                    console.log(`Nutritional Information for ${ingredient.Name}:`);
-                    console.log(`- Description: ${nutritionalInfo.description}`);
-                    console.log(`- MyPlate Category: ${nutritionalInfo.myPlateCategory}`);
-                    Object.entries(nutritionalInfo.nutrients).forEach(([nutrient, value]) => {
-                        console.log(`- ${nutrient}: ${value}`);
+            // Prepare promises for fetching nutritional data for each ingredient
+            const nutritionalDataPromises = ingredients.map(ingredient => {
+                return getNutritionalContent(ingredient.Name, ingredient.Amount, ingredient.Unit)
+                    .then(nutritionalInfo => {
+                        if (!nutritionalInfo.error) {
+                            console.log(`Nutritional Information for ${ingredient.Name}:`);
+                            console.log(`- Description: ${nutritionalInfo.description}`);
+                            console.log(`- MyPlate Category: ${nutritionalInfo.myPlateCategory}`);
+                            console.log(`Nutrients:`);
+                            const nutrients = {};
+                            Object.entries(nutritionalInfo.nutrients).forEach(([nutrient, value]) => {
+                                console.log(`- ${nutrient}: ${value}`);
+                                nutrients[nutrient] = value;
+                            });
+                            return {
+                                Name: ingredient.Name,
+                                Description: nutritionalInfo.description,
+                                MyPlateCategory: nutritionalInfo.myPlateCategory,
+                                Nutrients: nutrients
+                            };
+                        } else {
+                            console.log(`Error for ${ingredient.Name}: ${nutritionalInfo.error}`);
+                            return {
+                                Name: ingredient.Name,
+                                Error: nutritionalInfo.error
+                            };
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`Failed to fetch nutritional data for ${ingredient.Name}: ${error}`);
+                        return {
+                            Name: ingredient.Name,
+                            Error: 'Failed to fetch nutritional data'
+                        };
                     });
-                    nutritionalDataResults.push(nutritionalInfo);
-                } else {
-                    console.log(nutritionalInfo.error);
-                    nutritionalDataResults.push({
-                        Name: ingredient.Name,
-                        Error: nutritionalInfo.error
-                    });
-                }
-            }
+            });
 
-            // Emit the results for all ingredients once all nutritional data has been fetched
+            // Execute all promises concurrently
+            const nutritionalDataResults = await Promise.all(nutritionalDataPromises);
+            console.log(`Finished processing nutritional data for all ingredients from: ${url}`);
+
+            // Emit the results once all nutritional data has been fetched
             socket.emit('ingredients-result-for-nutritional-data', nutritionalDataResults);
-            console.log(`Finished processing and emitted nutritional data for ingredients from: ${url}`);
 
         } catch (error) {
             console.error(`Error fetching ingredients to nutritional data: ${error}`);

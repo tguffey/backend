@@ -5,8 +5,8 @@ module.exports = (socket) => {
     socket.on('get-ingredients', async (url) => {
         try {
             console.log(`Scraping recipe data from: ${url}`);
-            const { ingredients, instructions } = await scrapeIngredientsAndInstructions(url);
-            socket.emit('ingredients-result', { ingredients, instructions });
+            const { recipeName, ingredients, instructions } = await scrapeIngredientsAndInstructions(url);
+            socket.emit('ingredients-result', { recipeName, ingredients, instructions });
             console.log(`Finished scraping from: ${url}`);
         } catch (error) {
             console.error(`Error scraping recipe data: ${error}`);

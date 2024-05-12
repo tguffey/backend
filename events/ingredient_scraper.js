@@ -71,7 +71,13 @@ async function scrapeIngredientsAndInstructions(url) {
         const $ = cheerio.load(html);
         let ingredients = [];
         let instructions = [];
+        let recipeName = [];
 
+        // Scrape Recipe Name
+        // May need to adjust selector based on actual HTML structure of the website
+        recipeNameString = $('.wprm-recipe-name').first().text().trim();
+        recipeName.push(recipeNameString); 
+        
         // Scrape Ingredients
         $('.wprm-recipe-ingredient').each((index, element) => {
             const fullText = $(element).text().trim();
@@ -86,7 +92,12 @@ async function scrapeIngredientsAndInstructions(url) {
             instructions.push(stepText); // Collecting instructions as an array of strings
         });
 
-        return { ingredients, instructions }; // Return both ingredients and instructions
+        // Show the scraped data in log
+        console.log(recipeName);
+        //console.log(ingredients);
+        //console.log('Instructions:', instructions);
+
+        return { recipeName, ingredients, instructions }; // Return recipeName, ingredients and instructions
     } catch (error) {
         console.error(`Error scraping recipe data: ${error}`);
         throw error; // Rethrow the error to be caught by the caller
