@@ -43,7 +43,8 @@ io.on('connection', (socket) => {
     require('./events/ingredientsToNutritionalData')(socket);
     require('./events/barcode_lookup')(socket); // Barcode lookup event handler 
     require('./events/get_all_recipes')(socket,connection); // Recipe search event handler
-    
+    require('./events/add_recipes')(socket,connection); // Add recipe event handler
+
     require('./events/log_in')(socket,connection); // handle log in event and errors 
     require('./events/register_email_check')(socket,connection); // handle duplicate email checking
     require('./events/register_username_check')(socket,connection); // handle duplicate username checking
