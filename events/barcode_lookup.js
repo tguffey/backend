@@ -10,8 +10,13 @@ module.exports = (socket) => {
             return;
         }
 
+        // Print barcode to the console
+        console.log(`Received barcode: ${barcode}`);
+
         // Construct the URL for the Open Food Facts API using the barcode
         const url = `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`;
+        console.log(`Fetching data from URL: ${url}`);
+
         try {
             // Make a fetch request to the URL
             const response = await fetch(url);
