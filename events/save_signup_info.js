@@ -17,7 +17,7 @@ module.exports = (socket,connection) => {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // insert into database
-            const query = 'INSERT INTO testgrocer.users (username,email,password) values (? , ? , ?)';
+            const query = 'INSERT INTO grocerdb.users (username,email,password) values (? , ? , ?)';
             const values =[username, email, hashedPassword]; //sanitized       
             connection.query(query, values,(error, results, fields) => {
                 // handling duplicate mail error
